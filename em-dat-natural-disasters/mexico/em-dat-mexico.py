@@ -48,6 +48,7 @@ emdat["date_end"] = pd.to_datetime(emdat[["year", "month", "day"]])
 emdat.drop(columns = ["year", "month", "day"], inplace = True)
 
 ###keep only things for which we have coordinates
+emdat = pd.read_excel("mexico_updated.xlsx")
 emdat = emdat[~emdat.Latitude.isna()]
 emdat.sort_values('date_start', ascending = False, inplace = True)
 
@@ -118,17 +119,18 @@ for disaster in emdat["Disaster Type"].unique():
         '<br>Total dead: %{customdata[1]:,.0f}'
         '<br>Total damages: %{customdata[2]:,.0f} mln US$',
         mode='markers',
-        showlegend=False,
+        name = disaster,
+        showlegend=True,
         marker=go.scattermapbox.Marker(
-            size = 4 * earth['Total Affected'].apply(lambda x: x**0.2),
+            size = 4 * earth['Total Affected'].apply(lambda x: x**0.18),
             opacity=0.7,
-            reversescale=True,
-            autocolorscale=False,
-            colorscale='Spectral',
-            cmin=0,
-            color=earth['Total Affected'],
-            cmax=emdat['Total Affected'].max(),
-            colorbar_title="Number of people<br>affected by disaster"
+            # reversescale=True,
+            # autocolorscale=False,
+            # colorscale='Spectral',
+            # cmin=0,
+            # color=earth['Total Affected'],
+            # cmax=emdat['Total Affected'].max(),
+            # colorbar_title="Number of people<br>affected by disaster"
         )))
 fig.update_layout(
     hovermode='closest',
