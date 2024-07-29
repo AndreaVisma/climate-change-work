@@ -24,7 +24,7 @@ pio.renderers.default = 'browser'
 mapbox_access_token = open("c:\\data\\geo\\mapbox_token.txt").read()
 
 ###geolocation data
-mex_states = gpd.read_file("c:\\data\\geo\\World_Administrative_Divisions.shp")
+mex_states = gpd.read_file("c:\\data\\geo\\world_admin2\\World_Administrative_Divisions.shp")
 mex_states = mex_states[(mex_states.COUNTRY == "Mexico") & (mex_states.LAND_RANK == 5)]
 
 ##data ingreso promedio
@@ -41,8 +41,9 @@ fig = fig.add_trace(go.Choroplethmapbox(geojson=json.loads(df['geometry'].to_jso
                                         text=df['NAME'],
                                         hovertemplate=
                                         '<br>State: %{text}' +
-                                        '<br>Ingreso del trabajo promedio<br>por hogar (2022): %{z:,.0f} pesos',
-                                        colorscale="speed", marker_opacity=0.7, colorbar_title="Ingreso del trabajo promedio<br>por hogar (2022, pesos)"))
+                                        '<br>Ingreso total promedio<br>por hogar (2022): %{z:,.0f} pesos',
+                                        colorscale="speed", marker_opacity=0.7, colorbar_title="Ingreso del trabajo promedio<br>por hogar (2022, pesos)",
+                                        reversescale=True))
 fig.update_layout(
     hovermode='closest',
     mapbox=dict(
@@ -56,7 +57,7 @@ fig.update_layout(
         zoom=4
     )
 )
-fig.update_layout(title = 'Ingreso medio del trabajo por hogar, Mexico, 2022')
+fig.update_layout(title = 'Ingreso medio total por hogar, Mexico, 2022')
 fig.update_geos(fitbounds="locations", lataxis_showgrid=True, lonaxis_showgrid=True, showcountries=True)
 fig.write_html(os.getcwd() + "\\em-dat-natural-disasters\\mexico\\plots\\total_ingreso_2022.html")
 fig.show()
