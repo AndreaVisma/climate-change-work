@@ -7,11 +7,8 @@ Description: creates a global dataset of natural disaster events
 
 #imports
 import pandas as pd
-import geopandas as gpd
 import matplotlib.pyplot as plt
-import contextily as cx
 import numpy as np
-import ast
 import plotly.graph_objects as go
 import plotly.io as pio
 import plotly.express as px
@@ -19,7 +16,6 @@ import os
 import json
 pio.renderers.default = 'browser'
 
-mapbox_access_token = open("c:\\data\\geo\\mapbox_token.txt").read()
 dict_names = {}
 with open('c:\\data\\general\\countries_dict.txt',
           encoding='utf-8') as f:
@@ -31,12 +27,14 @@ for k,v in js.items():
 
 #read the EM-DAT data
 emdat = pd.read_excel("c:\\data\\natural_disasters\\emdat_2024_07_all.xlsx")
-emdat = emdat[(emdat["Start Year"] >= 2010)].copy()
+emdat = emdat[(emdat["Start Year"] >= 2010) &
+              (emdat["Disaster Group"] == "Natural")].copy()
 emdat["Country"] = emdat["Country"].map(dict_names)
 
 #create a dataset with dummy variables
 emdat_tot = pd.pivot_table(data=emdat, columns =["Disaster Type"],
-                               index=["Country", "Start Year"], values="Total Affected")
+                               index=["Country", "Start Year"], values="Total Affected",
+                           aggfunc="sum")
 emdat_tot.fillna(0, inplace = True)
 emdat_tot = emdat_tot.astype(int)
 emdat_tot["total affected"] = emdat_tot.sum(axis=1)
@@ -56,4 +54,8 @@ def plot_disasters_year_country(country = 'Italy', disasters = ['total affected'
     plt.title(f"Number of people affected from {'s, '.join(disasters[:-1])}, {country}")
     plt.show(block = True)
 
-plot_disasters_year_country("Italy", ["Flood", "total affected"])
+plot_disasters_year_country("Mexico", ["Earthquake", "Storm"])
+
+emdat_tot.loc[emdat_tot["total affected"] > 0, "total affected"].map(np.log).hist(bins = 100)
+plt.title("log distribution of total people affected by\nnatural disasters in country-years")
+plt.show(block = True)
