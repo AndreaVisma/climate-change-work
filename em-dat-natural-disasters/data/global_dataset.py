@@ -41,6 +41,19 @@ emdat_tot["total affected"] = emdat_tot.sum(axis=1)
 emdat_tot.reset_index(inplace = True)
 emdat_tot.to_excel("c:\\data\\natural_disasters\\emdat_country_type.xlsx", index = False)
 
+## create a quarterly dataset
+month_quarter = {1:1, 2:1, 3:1, 4:2, 5:2, 6:2, 7:3, 8:3, 9:3, 10:4, 11:4, 12:4}
+#create a dataset with dummy variables
+emdat_q = pd.pivot_table(data=emdat, columns =["Disaster Type"],
+                               index=["Country", "Start Year", "Start Month"], values="Total Affected",
+                           aggfunc="sum")
+emdat_q.fillna(0, inplace = True)
+emdat_q = emdat_q.astype(int)
+emdat_q["total affected"] = emdat_q.sum(axis=1)
+emdat_q.reset_index(inplace = True)
+emdat_q['quarter'] = emdat_q["Start Month"].map(month_quarter)
+emdat_tot.to_excel("c:\\data\\natural_disasters\\emdat_country_type_quarterly.xlsx", index = False)
+
 def plot_disasters_year_country(country = 'Italy', disasters = ['total affected']):
 
     disasters.append("Start Year")
