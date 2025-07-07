@@ -48,7 +48,7 @@ emdat["date_end"] = pd.to_datetime(emdat[["year", "month", "day"]])
 emdat.drop(columns = ["year", "month", "day"], inplace = True)
 
 ###keep only things for which we have coordinates
-emdat = pd.read_excel("mexico_updated.xlsx")
+emdat = pd.read_excel("C:\\git-projects\\climate-change-work\\mexico_updated.xlsx")
 emdat = emdat[~emdat.Latitude.isna()]
 emdat.sort_values('date_start', ascending = False, inplace = True)
 
@@ -98,7 +98,7 @@ fig.update_layout(
 
 fig.update_layout(title = 'Earthquakes in Mexico, 1995-2024')
 fig.update_geos(fitbounds="locations", lataxis_showgrid=True, lonaxis_showgrid=True, showcountries=True)
-fig.write_html(os.getcwd() + "\\em-dat-natural-disasters\\mexico\\plots\\earthquakes-1995-2024.html")
+fig.write_html("C:\\git-projects\\climate-change-work\\em-dat-natural-disasters\\mexico\\plots\\earthquakes-1995-2024.html")
 fig.show()
 
 #### plot all disasters together

@@ -27,13 +27,14 @@ for k,v in js.items():
 
 #read the EM-DAT data
 emdat = pd.read_excel("c:\\data\\natural_disasters\\emdat_2024_07_all.xlsx")
-emdat = emdat[(emdat["Start Year"] >= 2010) &
+emdat = emdat[(emdat["Start Year"] >= 1990) &
               (emdat["Disaster Group"] == "Natural")].copy()
 emdat["Country"] = emdat["Country"].map(dict_names)
 
 #create a dataset with dummy variables
 emdat_tot = pd.pivot_table(data=emdat, columns =["Disaster Type"],
-                               index=["Country", "Start Year"], values="Total Affected",
+                               index=["Country", "Start Year", "Start Month", "Start Day",
+                                      "End Year", "End Month", "End Day"], values="Total Affected",
                            aggfunc="sum")
 emdat_tot.fillna(0, inplace = True)
 emdat_tot = emdat_tot.astype(int)
@@ -45,14 +46,14 @@ emdat_tot.to_excel("c:\\data\\natural_disasters\\emdat_country_type.xlsx", index
 month_quarter = {1:1, 2:1, 3:1, 4:2, 5:2, 6:2, 7:3, 8:3, 9:3, 10:4, 11:4, 12:4}
 #create a dataset with dummy variables
 emdat_q = pd.pivot_table(data=emdat, columns =["Disaster Type"],
-                               index=["Country", "Start Year", "Start Month"], values="Total Affected",
+                               index=["Country", "Start Year", "Start Month", "Start Day"], values="Total Affected",
                            aggfunc="sum")
 emdat_q.fillna(0, inplace = True)
 emdat_q = emdat_q.astype(int)
 emdat_q["total affected"] = emdat_q.sum(axis=1)
 emdat_q.reset_index(inplace = True)
 emdat_q['quarter'] = emdat_q["Start Month"].map(month_quarter)
-emdat_tot.to_excel("c:\\data\\natural_disasters\\emdat_country_type_quarterly.xlsx", index = False)
+emdat_q.to_excel("c:\\data\\natural_disasters\\emdat_country_type_quarterly.xlsx", index = False)
 
 def plot_disasters_year_country(country = 'Italy', disasters = ['total affected']):
 
